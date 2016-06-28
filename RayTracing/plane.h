@@ -1,19 +1,17 @@
 #ifndef _PLANE_H_
 #define _PLANE_H_
 #include "intersectresult.h"
-#include "vector3.h"
-#include "ray.h"
 #include "checkermaterial.h"
 
-class Plane
+class Plane: public Object
 {
 public:
 	Plane();
 	Plane(Vector3, double);
 	~Plane();
 
-	IntersectResult isIntersect(Ray);
-	Material *material;
+	IntersectResult isIntersect(Ray &);
+	//Material *material;
 private:
 	Vector3 normal;
 	double  d;

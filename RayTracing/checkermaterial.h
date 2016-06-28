@@ -7,10 +7,10 @@ class CheckMaterial: public Material
 {
 public:
 	CheckMaterial();
-	CheckMaterial(double _scale, double _reflectiveness = 0);
+	CheckMaterial(double _scale, double _reflectiveness = 0.0);
 	~CheckMaterial();
 
-	virtual Color sample(const Ray &tmpRay, const Vector3 &position, const Vector3 &normal);
+	virtual Color sample(Ray &tmpRay, const Vector3 &position, const Vector3 &normal);
 private:
 	double scale;
 

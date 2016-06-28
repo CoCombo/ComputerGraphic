@@ -9,6 +9,8 @@
 #include "perspectiveCamera.h"
 //#include "sphere.h"
 #include "plane.h"
+#include "sphere.h"
+#include "union.h"
 #define WINDOW_WIDTH  800
 #define WINDOW_HEIGHT 800
 #define MIN(a, b) (a <= b ? a : b)
@@ -38,11 +40,20 @@ void renderDepth(GLFWwindow *window)
 	glPointSize(2.0);
 	double horiz=0.0;
 	double dep=10;
-	perCamera camera( Vector3(0.0, 10.0, 10), Vector3(0.0, -0.5, -1.0), Vector3(0.0, 1.0, 0.0), 90.0);
+	perCamera camera( Vector3(0.0, 10.0, 10), Vector3(0.0, 0.0, -1.0), Vector3(0.0, 1.0, 0.0), 90.0);
 	long maxDepth=20;
-	//Sphere sphere1 = Sphere(Vector3(0.0, 10.0, -10.0), 10.0);
-	Plane plane1(Vector3(0.0, 1.0, 0.0), 1.0);
-	plane1.material = new CheckMaterial(1.0f);
+	Object *plane1 =  new Plane(Vector3(0.0, 1.0, 0.0), 1.0);
+	Object *sphere1 = new Sphere(Vector3(0.0, 10.0, -10.0), 4.0);
+	Object *sphere2 = new Sphere(Vector3(5.0, 5.0, -10.0), 3.0);
+	plane1->material  = new CheckMaterial(0.1f);
+	sphere1->material = new PhongMaterial(Color::red(), Color::white(), 20);
+	sphere2->material = new PhongMaterial(Color::blue(), Color::white(), 20);
+
+	Union scene;
+	scene.addObject(plane1);
+	scene.addObject(sphere1);
+	scene.addObject(sphere2);
+
 	double dx=1.0/WINDOW_WIDTH;
 	double dy=1.0/WINDOW_HEIGHT;
 	double dD=255.0/maxDepth;
@@ -54,12 +65,13 @@ void renderDepth(GLFWwindow *window)
 		double sy = dy * y;
 		for (double x = 0.0; x < WINDOW_WIDTH; ++x)
 		{
-			double sx =dx*x;
+			double sx =dx * x;
 			Ray ray(camera.generateRay(sx, sy));
-			IntersectResult result = plane1.isIntersect(ray);
+			IntersectResult result = scene.isIntersect(ray);
 			if (result.isHit)
 			{
-				Color color = plane1.material->sample(ray, result.position, result.normal);
+				//Color color = result.object->material->sample(ray, result.position, result.normal);
+				Color color = result.object->material->sample(ray, result.position, result.normal);
 				color.saturate();
 				//double t=MIN(result.distance*dD,255.0f);
 				//int depth = (int)(255 -t);
@@ -74,44 +86,6 @@ void renderDepth(GLFWwindow *window)
 	glfwPollEvents();
 }
 
-/*
-void  drawScene(GLFWwindow *window) 
-{
-	float colorSpan = 0.0005f;
-	float color = 0.0f;
-	float pixelSize = 1.0f;
-	float posY = -1.0f;
-	float posX = -1.0f;
-	long  maxDepth = 20;
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-	//将原点移动到左下角  
-	glTranslatef(-0.5f, -0.5f, 0.0f);
-	glPointSize(2.0);
-	glBegin(GL_POINTS);
-	double dx = 1.0f / WINDOW_WIDTH;
-	double dy = 1.0f / WINDOW_HEIGHT;
-	float dD = 255.0f / maxDepth;
-	glBegin(GL_POINTS);
-
-	for (long y = 0; y < WINDOW_HEIGHT; ++y)
-	{
-		double sy = 1 - dy*y;
-		for (long x = 0; x < WINDOW_WIDTH; ++x)
-		{
-			double sx = dx*x;
-			float colorR = x*1.0 / WINDOW_WIDTH * 255;
-			float colorB = y*1.0 / WINDOW_HEIGHT * 255;
-			glColor3ub(colorR, 0, colorB);
-			glVertex2f(sx, sy);
-		}
-	}
-	glEnd();
-	// 交换缓冲区  
-	glfwSwapBuffers(window); 
-	glfwPollEvents();
-}
-*/
 /*
 //重置窗口大小后的回调函数  
 void resizeGL(int width, int height)
@@ -145,7 +119,7 @@ int main(void)
 		return -1;
 	}
 	// 创建一个OpenGL 窗口
-	window = glfwCreateWindow(1366, 768, "Test", NULL, NULL);
+	window = glfwCreateWindow(1500, 1500, "Test", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -159,11 +133,6 @@ int main(void)
 	glfwMakeContextCurrent(window);
 	while (!glfwWindowShouldClose(window))
 	{
-		//Sphere sphere1 = Sphere(Vector3(0.0, 10.0, -10.0), 10.0);
-		//perCamera camera = perCamera(Vector3(0.0, 10.0, 10.0), Vector3(0.0, 0.0, -1.0), Vector3(0.0, 1.0, 0.0));
-		//perCamera camera = perCamera();
-		// OpenGL rendering goes here...  
-		//glClear(GL_COLOR_BUFFER_BIT);
 		// 当按下ESC键的时候触发  
 		//running = !glfwGetKey(window, GLFW_KEY_ESCAPE) && glfwGetWindowAttrib(window, GLFW_OPENED);
 		renderDepth(window);

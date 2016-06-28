@@ -42,7 +42,7 @@ Vector3 Sphere::getNoraml(Vector3 tmpPoint)
 	return tmpPoint - center;
 }
 
-IntersectResult Sphere::isIntersect(Ray tmpRay)
+IntersectResult Sphere::isIntersect(Ray &tmpRay)
 {
 	IntersectResult result = IntersectResult::noHit();
 	//radical formula 
@@ -56,6 +56,7 @@ IntersectResult Sphere::isIntersect(Ray tmpRay)
 		if (underSqrt >= 0)
 		{
 			result.isHit = true;
+			result.object = this;
 			result.distance = -dDotv - std::sqrt(underSqrt);
 			result.position = tmpRay.getPoint(result.distance);
 			result.normal = getNoraml(result.position);

@@ -10,7 +10,7 @@ public:
 	Material();
 	Material(double _ref);
 	~Material();
-	virtual Color sample(const Ray &_ray, const Vector3 &_position, const Vector3 &_normal) = 0;//pure function
+	virtual Color sample(Ray &_ray, const Vector3 &_position, const Vector3 &_normal) = 0;//pure function
 	double getRef();
 	void   setRef(double tmpRef);
 protected:

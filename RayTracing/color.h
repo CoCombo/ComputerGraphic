@@ -15,8 +15,8 @@ public:
 
 	Color add(const Color &);
 	Color multiply(double)        const;
-	Color modulate(const Color &) const;
-	void saturate();             //使饱和
+	Color modulate(const Color &) const;//颜色调制，
+	void  saturate();                   //使饱和
 	void  show()                  const;
 
 	static Color black() { return Color(0, 0, 0); }

@@ -2,8 +2,9 @@
 #define _SPHERE_H_
 #include "ray.h"
 #include "intersectresult.h"
+#include "phongmaterial.h"
 
-class Sphere
+class Sphere: public Object
 {
 public:
 	Sphere();
@@ -16,7 +17,9 @@ public:
 	Vector3 getCenter();
 	double  getRadius();
 	Vector3 getNoraml(Vector3);
-	IntersectResult isIntersect(Ray);
+	IntersectResult isIntersect(Ray &);
+
+	//Material *material;
 private:
 	Vector3 center;
 	double  radius;

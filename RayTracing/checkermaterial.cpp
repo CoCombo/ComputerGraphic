@@ -10,7 +10,7 @@ CheckMaterial::CheckMaterial(double _scale, double _reflectiveness): scale(_scal
 CheckMaterial::~CheckMaterial()
 {}
 
-Color CheckMaterial::sample(const Ray &tmpRay, const Vector3 &position, const Vector3 &normal)
+Color CheckMaterial::sample(Ray &tmpRay, const Vector3 &position, const Vector3 &normal)
 {
 	double d = abs(std::floor(position.x * scale) + std::floor(position.z * scale));
 	d = fmod(d, 2);
